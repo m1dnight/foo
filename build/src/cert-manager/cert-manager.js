@@ -1,27 +1,3 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -31,19 +7,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const x509 = __importStar(require("@peculiar/x509"));
-const webcrypto_1 = require("@peculiar/webcrypto");
-const got = __importStar(require("got"));
-const fs_1 = __importDefault(require("fs"));
-const jose = __importStar(require("jose"));
-const crypto = new webcrypto_1.Crypto();
+import * as x509 from '@peculiar/x509';
+import { Crypto } from '@peculiar/webcrypto';
+import * as got from 'got';
+import fs from 'fs';
+import * as jose from 'jose';
+const crypto = new Crypto();
 x509.cryptoProvider.set(crypto);
-const caUrl = 'https://alliterative-tortoise.loomy.ca.smallstep.com';
-const caFingerprint = '95e4079f140ef35d4cafa8f1c9aec04202f97c582706ab12e66b7a6e9639f232';
+const caUrl = 'https://beep.smallstep.com';
+const caFingerprint = 'beep';
 // this is the JWK private key from the CA's JWK provisioner.
 // step ca provisioner list | jq -r '.[] | select(.name == "myjwkprovisioner") | .encryptedKey' | step crypto jwe decrypt | jq > jwk.json
 const jwkFilename = 'jwk.json';
@@ -116,7 +88,7 @@ class StepClient {
     generate_jwt(cn, dnsSANs, audience, issuer, jwkFilename) {
         return __awaiter(this, void 0, void 0, function* () {
             // make the jwk
-            const jwkJSON = yield JSON.parse(fs_1.default.readFileSync(jwkFilename).toString());
+            const jwkJSON = yield JSON.parse(fs.readFileSync(jwkFilename).toString());
             const privateKey = yield jose.importJWK(jwkJSON);
             const kid = jwkJSON.kid;
             const jwt = yield new jose.SignJWT({
@@ -161,4 +133,4 @@ function create_cert(id, cn, dnsSANs) {
         console.log(certResponse.crt);
     });
 }
-module.exports = { create_cert };
+export { create_cert };

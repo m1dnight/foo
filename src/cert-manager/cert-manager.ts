@@ -124,4 +124,4 @@ async function create_cert(id: string, cn: string, dnsSANs: string[]) {
   console.log(certResponse.crt);
 }
 
-module.exports = {create_cert};
+export {create_cert};

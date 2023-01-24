@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,22 +7,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const dotenv_1 = __importDefault(require("dotenv"));
-const express_oauth2_jwt_bearer_1 = require("express-oauth2-jwt-bearer");
-dotenv_1.default.config();
-const uwdikkema = require('./cert-manager/cert-manager');
-const app = (0, express_1.default)();
+import express from 'express';
+import dotenv from 'dotenv';
+import { auth } from 'express-oauth2-jwt-bearer';
+dotenv.config();
+import { create_cert } from './cert-manager/cert-manager.js';
+const app = express();
 const port = process.env.PORT;
-const checkJwt = (0, express_oauth2_jwt_bearer_1.auth)({
+const checkJwt = auth({
     audience: 'https://api.mijn.loomy.be', issuerBaseURL: 'https://dev-v03-umba.us.auth0.com/',
 });
 app.get('/api/public', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const cert = yield uwdikkema.create_cert('uw ma is uw pa', 'uw ma is uw pa', []);
+    const cert = yield create_cert('uw ma is uw pa', 'uw ma is uw pa', []);
     res.json({
         message: 'Hello from a public endpoint! You don\'t need to be authenticated to see this.',
     });

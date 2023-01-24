@@ -4,7 +4,7 @@ import {auth} from 'express-oauth2-jwt-bearer';
 
 dotenv.config();
 
-const uwdikkema = require('./cert-manager/cert-manager');
+import {create_cert} from './cert-manager/cert-manager.js'
 
 const app: Express = express();
 const port = process.env.PORT;
@@ -14,7 +14,7 @@ const checkJwt = auth({
 });
 
 app.get('/api/public', async (req: Request, res: Response) => {
-  const cert = await uwdikkema.create_cert('uw ma is uw pa', 'uw ma is uw pa', []);
+  const cert = await create_cert('uw ma is uw pa', 'uw ma is uw pa', []);
 
   res.json({
     message: 'Hello from a public endpoint! You don\'t need to be authenticated to see this.',
