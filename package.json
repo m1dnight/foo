@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "engines": {
     "node": ">=10"
   },
@@ -11,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "gts lint",
     "clean": "gts clean",
-    "compile": "tsc",
+    "compile": "esbuild --bundle --minify --platform=node --outdir=build src/index.ts",
     "fix": "gts fix",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
@@ -30,6 +29,7 @@
     "@peculiar/webcrypto": "^1.4.1",
     "@peculiar/x509": "^1.9.3",
     "dotenv": "^16.0.3",
+    "esbuild": "^0.17.4",
     "express": "^4.18.2",
     "express-oauth2-jwt-bearer": "^1.3.0",
     "got": "^12.5.3",
