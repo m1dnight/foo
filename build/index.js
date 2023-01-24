@@ -16,18 +16,16 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const express_oauth2_jwt_bearer_1 = require("express-oauth2-jwt-bearer");
 dotenv_1.default.config();
-const uwdikkema = require('./cert-manager/cert-manager');
 const app = (0, express_1.default)();
 const port = process.env.PORT;
 const checkJwt = (0, express_oauth2_jwt_bearer_1.auth)({
     audience: 'https://api.mijn.loomy.be', issuerBaseURL: 'https://dev-v03-umba.us.auth0.com/',
 });
-app.get('/api/public', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const cert = yield uwdikkema.create_cert('uw ma is uw pa', 'uw ma is uw pa', []);
+app.get('/api/public', (req, res) => {
     res.json({
         message: 'Hello from a public endpoint! You don\'t need to be authenticated to see this.',
     });
-}));
+});
 // This route needs authentication
 app.get('/api/private', checkJwt, (req, res) => {
     res.json({
@@ -35,6 +33,7 @@ app.get('/api/private', checkJwt, (req, res) => {
     });
 });
 app.post('/api/device/request-certificate', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // const cert = await create_cert('uw ma is uw pa', 'uw ma is uw pa', []);
     res.json({
         message: 'Here is your cert',
     });

@@ -1,24 +1,39 @@
-console.log('Try npm run lint/fix!');
+import express, {Express, Request, Response} from 'express';
+import dotenv from 'dotenv';
+import {auth} from 'express-oauth2-jwt-bearer';
 
-const longString =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut aliquet diam.';
+dotenv.config();
 
-const trailing = 'Semicolon';
+const uwdikkema = require('./cert-manager/cert-manager');
 
-const why = 'am I tabbed?';
+const app: Express = express();
+const port = process.env.PORT;
 
-export function doSomeStuff(
-  withThis: string,
-  andThat: string,
-  andThose: string[]
-) {
-  //function on one line
-  if (!andThose.length) {
-    return false;
-  }
-  console.log(withThis);
-  console.log(andThat);
-  console.dir(andThose);
-  return;
-}
-// TODO: more examples
+const checkJwt = auth({
+  audience: 'https://api.mijn.loomy.be', issuerBaseURL: 'https://dev-v03-umba.us.auth0.com/',
+});
+
+app.get('/api/public', async (req: Request, res: Response) => {
+  const cert = await uwdikkema.create_cert('uw ma is uw pa', 'uw ma is uw pa', []);
+
+  res.json({
+    message: 'Hello from a public endpoint! You don\'t need to be authenticated to see this.',
+  });
+});
+
+// This route needs authentication
+app.get('/api/private', checkJwt, (req: Request, res: Response) => {
+  res.json({
+    message: 'Hello from a private endpoint! You need to be authenticated to see this.',
+  });
+});
+
+app.post('/api/device/request-certificate', async (req: Request, res: Response) => {
+  res.json({
+    message: 'Here is your cert',
+  });
+});
+
+app.listen(port, () => {
+  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+});
